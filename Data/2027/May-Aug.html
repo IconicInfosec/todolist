@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>May - Aug 2027 - To Do List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* Main Content */
+        #main-content {
+            display: block;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        /* Tag Filter Section */
+        .tag-filter-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .tag-filter-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tag-filter {
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-filter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .tag-filter.active {
+            border-color: transparent;
+            color: white;
+        }
+
+        .tag-filter.all.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .tag-filter.business.active {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .tag-filter.education.active {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+
+        .tag-filter.work.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .tag-filter.family.active {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        }
+
+        .tag-filter.health.active {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        /* Task Board */
+        .task-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .task-column {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            min-height: 300px;
+        }
+
+        .task-column h2 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.7rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .task-item {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid #ddd;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .task-item.moving {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .task-item.business {
+            border-left-color: #3498db;
+        }
+
+        .task-item.education {
+            border-left-color: #9b59b6;
+        }
+
+        .task-item.work {
+            border-left-color: #e74c3c;
+        }
+
+        .task-item.family {
+            border-left-color: #e67e22;
+        }
+
+        .task-item.health {
+            border-left-color: #27ae60;
+        }
+
+        .task-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .task-item-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            gap: 1rem;
+        }
+
+        .task-item input[type="checkbox"] {
+            min-width: 20px;
+            min-height: 20px;
+            cursor: pointer;
+        }
+
+        .task-item label {
+            font-size: 1rem;
+            line-height: 1.5;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .task-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .task-tag.business { background: #3498db; }
+        .task-tag.education { background: #9b59b6; }
+        .task-tag.work { background: #e74c3c; }
+        .task-tag.family { background: #e67e22; }
+        .task-tag.health { background: #27ae60; }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0 0.5rem;
+        }
+
+        .delete-btn:hover {
+            color: #f44336;
+        }
+
+        .add-task-form {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .add-task-form input[type="text"] {
+            flex-grow: 1;
+            border: 2px solid #ddd;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .add-task-form input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-task-form select {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: white;
+            transition: border 0.3s;
+        }
+
+        .add-task-form select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-task-form button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .add-task-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .task-board {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tag-filters {
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div id="main-content">
+        <div class="container">
+            <div class="header">
+                <h1>📋 May - Aug 2027</h1>
+                <p class="subtitle">3 Months Target Ambition</p>
+            </div>
+
+            <!-- Tag Filter Section -->
+            <div class="tag-filter-section">
+                <div class="tag-filter-title">
+                    🏷️ Filter by Category
+                </div>
+                <div class="tag-filters">
+                    <div class="tag-filter all active" onclick="filterByTag('all')">
+                        ✨ All Tasks
+                    </div>
+                    <div class="tag-filter business" onclick="filterByTag('business')">
+                        💼 Business
+                    </div>
+                    <div class="tag-filter education" onclick="filterByTag('education')">
+                        📚 Education
+                    </div>
+                    <div class="tag-filter work" onclick="filterByTag('work')">
+                        💻 Work
+                    </div>
+                    <div class="tag-filter family" onclick="filterByTag('family')">
+                        👨‍👩‍👧‍👦 Family
+                    </div>
+                    <div class="tag-filter health" onclick="filterByTag('health')">
+                        ❤️ Health
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Board -->
+            <div class="task-board">
+                <div class="task-column">
+                    <h2>📝 To Do</h2>
+                    <div id="todo-list"></div>
+                    <div class="add-task-form">
+                        <input type="text" id="new-task-todo" placeholder="Add a new task..." onkeypress="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); addTask('todo'); }">
+                        <select id="tag-select-todo">
+                            <option value="business">💼 Business</option>
+                            <option value="education">📚 Education</option>
+                            <option value="work">💻 Work</option>
+                            <option value="family">👨‍👩‍👧‍👦 Family</option>
+                            <option value="health">❤️ Health</option>
+                        </select>
+                        <button onclick="addTask('todo')">➕ Add Task</button>
+                    </div>
+                </div>
+
+                <div class="task-column">
+                    <h2>⏳ In Progress</h2>
+                    <div id="in-progress-list"></div>
+                    <div class="add-task-form">
+                        <input type="text" id="new-task-in-progress" placeholder="Add a new task..." onkeypress="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); addTask('in-progress'); }">
+                        <select id="tag-select-in-progress">
+                            <option value="business">💼 Business</option>
+                            <option value="education">📚 Education</option>
+                            <option value="work">💻 Work</option>
+                            <option value="family">👨‍👩‍👧‍👦 Family</option>
+                            <option value="health">❤️ Health</option>
+                        </select>
+                        <button onclick="addTask('in-progress')">➕ Add Task</button>
+                    </div>
+                </div>
+
+                <div class="task-column">
+                    <h2>✅ Done</h2>
+                    <div id="done-list"></div>
+                    <div class="add-task-form">
+                        <input type="text" id="new-task-done" placeholder="Add a new task..." onkeypress="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); addTask('done'); }">
+                        <select id="tag-select-done">
+                            <option value="business">💼 Business</option>
+                            <option value="education">📚 Education</option>
+                            <option value="work">💻 Work</option>
+                            <option value="family">👨‍👩‍👧‍👦 Family</option>
+                            <option value="health">❤️ Health</option>
+                        </select>
+                        <button onclick="addTask('done')">➕ Add Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const storageKey = 'tasks_2027_may_aug';
+        let currentFilter = 'all';
+
+        
+
+         else {
+                errorMsg.style.display = 'block';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // Check if already authenticated
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            document.getElementById('password-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTasks);
+
+        function createTaskElement(task) {
+            const taskItem = document.createElement('div');
+            taskItem.className = `task-item ${task.tag}`;
+            taskItem.setAttribute('data-id', task.id);
+            taskItem.setAttribute('data-column', task.column);
+            taskItem.setAttribute('data-tag', task.tag);
+
+            const header = document.createElement('div');
+            header.className = 'task-item-header';
+
+            const content = document.createElement('div');
+            content.className = 'task-item-content';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.checked;
+            checkbox.onchange = () => handleCheckboxChange(task, checkbox, taskItem);
+
+            const label = document.createElement('label');
+            label.textContent = task.text;
+            label.onclick = () => checkbox.click();
+
+            const tagSpan = document.createElement('span');
+            tagSpan.className = `task-tag ${task.tag}`;
+            const tagIcons = {
+                business: '💼',
+                education: '📚',
+                work: '💻',
+                family: '👨‍👩‍👧‍👦',
+                health: '❤️'
+            };
+            tagSpan.textContent = `${tagIcons[task.tag]} ${task.tag}`;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = () => deleteTask(task.id);
+
+            content.appendChild(checkbox);
+            content.appendChild(label);
+            
+            header.appendChild(content);
+            header.appendChild(tagSpan);
+            header.appendChild(deleteBtn);
+            
+            taskItem.appendChild(header);
+            
+            return taskItem;
+        }
+
+        function handleCheckboxChange(task, checkbox, taskItem) {
+            const currentColumn = task.column;
+            
+            if (checkbox.checked) {
+                taskItem.classList.add('moving');
+                setTimeout(() => {
+                    task.column = 'done';
+                    task.checked = true;
+                    moveTaskToColumn(taskItem, 'done');
+                    saveTasks();
+                }, 300);
+            } else {
+                taskItem.classList.add('moving');
+                setTimeout(() => {
+                    const targetColumn = currentColumn === 'done' ? 'todo' : currentColumn;
+                    task.column = targetColumn;
+                    task.checked = false;
+                    moveTaskToColumn(taskItem, targetColumn);
+                    saveTasks();
+                }, 300);
+            }
+        }
+
+        function moveTaskToColumn(taskItem, targetColumn) {
+            const targetList = document.getElementById(`${targetColumn}-list`);
+            taskItem.classList.remove('moving');
+            targetList.appendChild(taskItem);
+        }
+
+        function addTask(column) {
+            const input = document.getElementById(`new-task-${column}`);
+            const tagSelect = document.getElementById(`tag-select-${column}`);
+            const text = input.value.trim();
+            if (text === '') return;
+
+            const task = {
+                id: Date.now(),
+                text: text,
+                checked: column === 'done',
+                column: column,
+                tag: tagSelect.value
+            };
+
+            const list = document.getElementById(`${column}-list`);
+            list.appendChild(createTaskElement(task));
+            input.value = '';
+            saveTasks();
+            filterByTag(currentFilter);
+        }
+
+        function deleteTask(id) {
+            const taskItem = document.querySelector(`[data-id='${id}']`);
+            if (taskItem) {
+                taskItem.style.opacity = '0';
+                taskItem.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    taskItem.remove();
+                    saveTasks();
+                }, 200);
+            }
+        }
+
+        function saveTasks() {
+            const tasks = {
+                todo: [],
+                'in-progress': [],
+                done: []
+            };
+            document.querySelectorAll('.task-item').forEach(item => {
+                const id = item.getAttribute('data-id');
+                const text = item.querySelector('label').textContent;
+                const checked = item.querySelector('input[type="checkbox"]').checked;
+                const column = item.getAttribute('data-column');
+                const tag = item.getAttribute('data-tag');
+                tasks[column].push({ id, text, checked, column, tag });
+            });
+            localStorage.setItem(storageKey, JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            const savedTasks = localStorage.getItem(storageKey);
+            if (!savedTasks) return;
+
+            const tasks = JSON.parse(savedTasks);
+            for (const column in tasks) {
+                const list = document.getElementById(`${column}-list`);
+                if(list) {
+                    tasks[column].forEach(task => {
+                        if (!task.tag) task.tag = 'business'; // Default tag for old tasks
+                        list.appendChild(createTaskElement(task));
+                    });
+                }
+            }
+        }
+
+        function filterByTag(tag) {
+            currentFilter = tag;
+            
+            // Update active filter button
+            document.querySelectorAll('.tag-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tag-filter.${tag}`).classList.add('active');
+
+            // Filter tasks
+            document.querySelectorAll('.task-item').forEach(item => {
+                if (tag === 'all' || item.getAttribute('data-tag') === tag) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
