@@ -404,23 +404,9 @@
 
     <script>
         
+        
         const storageKey = 'tasks_2027_jan_apr';
         let currentFilter = 'all';
-
-        
-
-         else {
-                errorMsg.style.display = 'block';
-                input.value = '';
-                input.focus();
-            }
-        }
-
-        // Check if already authenticated
-        if (sessionStorage.getItem('authenticated') === 'true') {
-            document.getElementById('password-screen').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }
 
         document.addEventListener('DOMContentLoaded', loadTasks);
 
